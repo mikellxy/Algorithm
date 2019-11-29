@@ -12,7 +12,7 @@ type Item interface {
 
 type Config struct {
 	Items []Item
-	Type   int
+	Type  int
 }
 
 type Heap struct {
@@ -37,11 +37,7 @@ func NewHeap(config *Config) *Heap {
 			h.hm[h.arr[i]] = i
 		}
 		// 建堆的时候，已存在的节点可能都不满足堆的性质，所以需要检查每一个节点
-		i := h.len / 2
-		for i > 0  {
-			h.heapify(i)
-			i--
-		}
+		h.build()
 	}
 	return h
 }
@@ -52,6 +48,19 @@ func (h *Heap) GetLen() int {
 
 func (h *Heap) GetType() int {
 	return h.typ
+}
+
+func (h *Heap) build() {
+	for i := h.len / 2; i >= 1; i -- {
+		j := i
+		for {
+			lastIndex := h.heapify(j)
+			if j == lastIndex {
+				break
+			}
+			j = lastIndex
+		}
+	}
 }
 
 // 向堆内放入一个元素
@@ -88,7 +97,7 @@ func (h *Heap) minheapify(i int) int {
 	if 2*i <= h.len && h.arr[2*i].Score() < h.arr[lastIndex].Score() {
 		lastIndex = 2 * i
 	}
-	if 2*i+i <= h.len && h.arr[2*i+1].Score() < h.arr[lastIndex].Score() {
+	if 2*i+1 <= h.len && h.arr[2*i+1].Score() < h.arr[lastIndex].Score() {
 		lastIndex = 2*i + 1
 	}
 	if lastIndex != i {
@@ -98,17 +107,15 @@ func (h *Heap) minheapify(i int) int {
 }
 
 func (h *Heap) maxheapify(i int) int {
-	max := h.arr[i].Score()
 	lastIndex := i
-	if 2*i <= h.len && h.arr[2*i].Score() > max {
-		max = h.arr[2*i].Score()
+	if 2*i <= h.len && h.arr[2*i].Score() > h.arr[lastIndex].Score() {
 		lastIndex = 2 * i
-		h.exchange(i, 2*i)
 	}
-	if 2*i+i <= h.len && h.arr[2*i+1].Score() > max {
-		max = h.arr[2*i+1].Score()
+	if 2*i+1 <= h.len && h.arr[2*i+1].Score() > h.arr[lastIndex].Score() {
 		lastIndex = 2*i + 1
-		h.exchange(i, 2*1+1)
+	}
+	if lastIndex != i {
+		h.exchange(lastIndex, i)
 	}
 	return lastIndex
 }
@@ -153,7 +160,7 @@ func (h *Heap) Update(item Item) {
 
 	// 对于下层，相当于删除了一个元素
 	i := index
-	for i >= h.len / 2 {
+	for i <= h.len/2 {
 		lastIndex := h.heapify(i)
 		if lastIndex == i {
 			break
