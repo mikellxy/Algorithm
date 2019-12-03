@@ -1,4 +1,4 @@
-package shortest_route
+package finding_path
 
 import "testing"
 
