@@ -195,3 +195,8 @@ func (h *Heap) exchange(first int, second int) {
 	h.hm[h.arr[first]] = first
 	h.hm[h.arr[second]] = second
 }
+
+func (h *Heap) Clear() {
+	h.arr = h.arr[:1]
+	h.len = 0
+}
