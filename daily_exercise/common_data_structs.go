@@ -42,3 +42,9 @@ func (s *stack) Top() (int, error) {
 	s.len--
 	return item, nil
 }
+
+type treeNode struct {
+	val int
+	left *treeNode
+	right *treeNode
+}
